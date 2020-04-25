@@ -280,3 +280,59 @@ class Child extends React.Component {
 
 ReactDOM.render(<Container />, document.getElementById('root'));
 ```
+
+## React Events
+
+React events are written in camelCase.
+
+React event handlers are written in curly braces.
+
+React event handlers should be put as a method in the component class.
+
+React event handler methods should most often be arrow functions, as they have `this` bound to the object the method is defined on by default.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class ThisLogger extends React.Component {
+
+  // The constructor method binds this in the shoot method to the component
+  constructor(props) {
+    super(props)
+    this.logWithRegularBound = this.logWithRegularBound.bind(this)
+  }
+
+
+  // Arrow Method for event handler. This will be the 
+  logWithArrow = () => {
+    console.log(this);
+    //  ThisLogger, as arrow functions this is the object the method is defined on.
+  }
+  
+  //  Regular Method for event handler
+  logWithRegular() {
+    console.log(this);
+    // undefined, as the regular function this is not defined by default.
+  }
+  
+  //  Regular Method for event handler, but its this is bound in the constructor.
+  logWithRegularBound() {
+    console.log(this);
+    //  ThisLogger, the binding of this has been set in the constructor.
+  }
+
+  render() {
+    // ThisLogger renders buttons which run methods on click
+    return (
+      <>
+        <button onClick={this.logWithArrow}>This with arrow function!</button>
+        <button onClick={this.logWithRegular}>This with regular function!</button>
+        <button onClick={this.logWithRegularBound}>This bound with regular function!</button>
+      </>
+    );
+  }
+}
+
+ReactDOM.render(<ThisLogger />, document.getElementById('root'));
+```
