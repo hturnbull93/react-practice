@@ -1,68 +1,222 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React Practice
 
-## Available Scripts
+## A Basic App
 
-In the project directory, you can run:
+In `src/index.js`:
 
-### `npm start`
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+// A Garage component that returns a single div containing the title and a Car component.
+// It embeds a prop of size into the JSX it renders.
+class Garage extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>This is my {this.props.size} Garage</h1>
+        <Car />
+      </div>
+    )
+  }
+}
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+// A Car component that has a state object.
+class Car extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      brand: "Ford",
+      model: "Mustang",
+      colour: "red",
+      year: 1964
+    };
+  }
 
-### `npm test`
+  // The changeColour method sets the state colour to blue.
+  changeColour = () => {
+    this.setState({colour: "blue"})
+  }
+  
+  // The states are embedded in the JSX returned by the render method.
+  // The button element runs this components changeColour method on click.
+  render() {
+    return (
+      <div>
+        <h3>My {this.state.brand} Car</h3>
+        <p>It is a {this.state.colour} {this.state.model} from {this.state.year}.</p>
+        <button type="button" onClick={this.changeColour}>Update Colour</button>
+      </div>
+    );
+  }
+}
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+// The react render method renders the Garage component with a size prop in index.html's root id div.
+ReactDOM.render(<Garage size="large"/>, document.getElementById('root'));
+```
 
-### `npm run build`
+## Importing Components
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Importing Garage component from `Garage.js` into `index.js`:
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Garage from './Garage.js'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+// ... rest of file ...
+```
 
-### `npm run eject`
+In `Garage.js`:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```js
+import React from 'react'
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+class Garage extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>This is my {this.props.size} Garage</h1>
+        <Car />
+      </div>
+    )
+  }
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+// Exportable module
+export default Garage
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## React Lifecycle
 
-## Learn More
+Each component in React has a lifecycle which you can monitor and manipulate during its three main phases.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The three phases are: Mounting, Updating, and Unmounting.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Mounting
 
-### Code Splitting
+There are four built in methods that get called when mounting an element into the dom:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+1. `constructor()` 
+   - Run on creation of component, holds state.
+2. `getDerivedStateFromProps()`
+   - Run before render, updates state based on props.
+3. `render()`
+   - Always required
+   - Renders the html to the DOM.
+4. `componentDidMount()`
+   - Run after render, for things that require the component already in DOM.
 
-### Analyzing the Bundle Size
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+class Header extends React.Component {
+  // The constructor method is called by React every time a component is made.
+  constructor(props) {
+    super(props);
+    this.state = {
+      favouritecolour: "red",
+      favouriteshape: "circle"
+    };
+  }
 
-### Making a Progressive Web App
+  // The getDerivedStateFromProps method is called right before rendering.
+  // It takes state as an arg, returning an object with an updated state.
+  // It allows the default state to be customised by props.
+  // Here the state is derived from the prop favcol, updating the favouritecolour to yellow.
+  static getDerivedStateFromProps(props, state) {
+    return {favouritecolour: props.favcol };
+  }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+  // The componentDidMount method is called after rendering.
+  // This is where statements can be run where the element must already be in the DOM.
+  // Here, the state of favouriteshape is updated 1s after rendering.
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({favouriteshape: "square"})
+    }, 1000)
+  }
 
-### Advanced Configuration
+  //  The render method updates the DOM with the returned JSX.
+  render() {
+    return (
+      <>
+        <h1>My Favourite Things</h1>
+        <p>My Favourite Colour is {this.state.favouritecolour}</p>
+        <p>My Favourite shape is {this.state.favouriteshape}</p>
+      </>
+    );
+  }
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+ReactDOM.render(<Header favcol="yellow"/>, document.getElementById('root'));
+```
 
-### Deployment
+### Updating
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+A component is updated any time there is a change in its state or props.
 
-### `npm run build` fails to minify
+1. `getDerivedStateFromProps()`
+   - As before, the props can influence the state. 
+   - This occurs after anything that would change the state and cause the component to update, which could then overwrite the change made.
+2. `shouldComponentUpdate()`
+   - Can add this and return false to prevent the component from updating (default is true).
+3. `render()`
+   - Always called 
+   - Re-renders the element with the new state and props.
+4. `getSnapshotBeforeUpdate()`
+   - Takes args for `prevProps`, `prevState`, which are objects for the pre re-render props and state.
+5. `componentDidUpdate()`
+   - Similar to `componentDidMount`, is called after the component is re-rendered in the DOM.
+   - As this could change a state or prop, it may also cause an update to occur.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+In `index.js`
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class Header extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {favouritecolour: "red"};
+  }
+  
+  // After the mounting render, the state favouritecolour is set to yellow, causing an update.
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({favouritecolour: "yellow"})
+    }, 1000)
+  }
+  
+  // After the update render, the state favouritecolour is sampled form the colours array
+  // This causes another update, which causes the componentDidUpdate method to be called again in a loop.
+  componentDidUpdate() {
+    let colours = ["red", "blue", "green", "yellow", "orange", "purple"]
+    setTimeout(() => {
+      this.setState({favouritecolour: colours[Math.floor(Math.random() * colours.length)]})
+    }, 1000)
+  }
+
+  // After the update render, the getSnapshotBeforeUpdate method saves the previous state.
+  // The previous state is prepended as a new element within the #log element.
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    let newDiv = document.createElement("DIV");
+    newDiv.innerHTML = "Before the update, the favourite was " + prevState.favouritecolour;
+    document.getElementById('log').prepend(newDiv)
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>My Favourite Colour is {this.state.favouritecolour}</h1>
+        <div id="log"></div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Header />, document.getElementById('root'));
+```
