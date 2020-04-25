@@ -23,6 +23,9 @@ class Garage extends React.Component {
 
 // A Car component that has a state object.
 class Car extends React.Component {
+
+  // The constructor method must call its parents cpnstructor method (i.e. React.Component).
+  // state can be set in the constructor.
   constructor(props) {
     super(props);
     this.state = {
@@ -421,4 +424,125 @@ class HelloLogger extends React.Component {
 }
 
 ReactDOM.render(<HelloLogger />, document.getElementById('root'));
+```
+
+## Forms in React
+
+Forms can be rendered in JSX just like in HTML.
+
+Where HTML handles form data with the DOM, in React it is handled by the component.
+
+As the component handles the data it can be stored in the state.
+
+Changes can be tracked by event handlers called `onChange`.
+
+As elements can be rendered conditionally based on state, and forms can update and alter state, therefore forms can control rendering.
+
+Submitting forms can be controlled as well, as can multiple input fields.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyForm extends React.Component {
+
+  // constructor sets state with username as empty string and age as null
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      age: null,
+    };
+  }
+
+  // myChangeHandler accesses the input field name and value.
+  // It then sets state of whichever state property with the value.
+  // As this changes state, it causes an update.
+  myChangeHandler = (event) => {
+    let name = event.target.name;
+    let value = event.target.value;
+    this.setState({[name]: value});
+  }
+
+  mySubmitHandler = (event) => {
+    // Default behaviour of the form is prevented
+    event.preventDefault();
+    // alternate behaviour implemented
+    alert(`You are ${this.state.username} ${this.state.age}`);
+  }
+
+  render() {
+    // The h1 element can be rendered conditionally based on state.
+    // It only appears if the state username or age resolve to true (an empty string or null does not).
+    let header = '';
+    if (this.state.username || this.state.age) {
+      header = <h1>Hello {this.state.username} {this.state.age}</h1>;
+    } else {
+      header = '';
+    }
+
+    // render returns JSX embedding the state username and age.
+    // As the input fields call myChangeHandler on change, it updates any time their values are edited.
+    // The form onSubmit attribute calls mySubmitHandler, alerting with the entered name and age.
+    return (
+      <form onSubmit={this.mySubmitHandler}> 
+        {header}
+        <p>Enter your name:</p>
+        <input type='text' name='username' onChange={this.myChangeHandler} />
+        <p>Enter your age:</p>
+        <input type='number' name='age' onChange={this.myChangeHandler} />
+        <input type="submit"/>
+      </form>
+    );
+  }
+}
+
+ReactDOM.render(<MyForm />, document.getElementById('root'));
+```
+
+Validating user input can also be achieved.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      age: null,
+      // errormessage constructed as empty string
+      errormessage: ''
+    };
+  }
+  myChangeHandler = (event) => {
+    let nam = event.target.name;
+    let val = event.target.value;
+    let err = '';
+    if (nam === "age") {
+      // if val is not empty and not a number assign err
+      if (val !== "" && !Number(val)) {
+        err = <strong>Your age must be a number</strong>;
+      }
+    }
+    // set state with err and username/age with val
+    this.setState({errormessage: err});
+    this.setState({[nam]: val});
+  }
+  render() {
+    return (
+      <form>
+      <h1>Hello {this.state.username} {this.state.age}</h1>
+      <p>Enter your name:</p>
+      <input type='text' name='username' onChange={this.myChangeHandler} />
+      <p>Enter your age:</p>
+      <input type='text' name='age' onChange={this.myChangeHandler} />
+      {this.state.errormessage}
+      </form>
+    );
+  }
+}
+
+ReactDOM.render(<MyForm />, document.getElementById('root'));
 ```

@@ -1,31 +1,42 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class HelloLogger extends React.Component {
-
-  // Arrow Method for event handler.
-  logWithArrow = (message) => {
-    console.log(message);
+class MyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      age: null,
+      // errormessage constructed as empty string
+      errormessage: ''
+    };
   }
-
-  //  Regular Method for event handler.
-  logWithRegular(message) {
-    console.log(message);
+  myChangeHandler = (event) => {
+    let nam = event.target.name;
+    let val = event.target.value;
+    let err = '';
+    if (nam === "age") {
+      // if val is not empty and not a number assign err
+      if (val !== "" && !Number(val)) {
+        err = <strong>Your age must be a number</strong>;
+      }
+    }
+    // set state with err and username/age with val
+    this.setState({errormessage: err});
+    this.setState({[nam]: val});
   }
-
-  // HelloLogger renders buttons which run methods on click.
   render() {
     return (
-      <>
-        {/* When clicked, an anonymous arrow function calls either arrow or regular function passing in the argument */}
-        <button onClick={() => this.logWithArrow("Hello")}>Log "Hello" with arrow function!</button>
-        <button onClick={() => this.logWithRegular("Hello")}>Log "Hello" with arrow function!</button>
-        {/* When clicked, either is bound to this (HelloLogger), and passed the argument */}
-        <button onClick={this.logWithArrow.bind(this,"Hello")}>Log "Hello" with regular function!</button>
-        <button onClick={this.logWithRegular.bind(this,"Hello")}>Log "Hello" with regular function!</button>
-      </>
+      <form>
+      <h1>Hello {this.state.username} {this.state.age}</h1>
+      <p>Enter your name:</p>
+      <input type='text' name='username' onChange={this.myChangeHandler} />
+      <p>Enter your age:</p>
+      <input type='text' name='age' onChange={this.myChangeHandler} />
+      {this.state.errormessage}
+      </form>
     );
   }
 }
 
-ReactDOM.render(<HelloLogger />, document.getElementById('root'));
+ReactDOM.render(<MyForm />, document.getElementById('root'));
