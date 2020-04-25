@@ -1,43 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class ThisLogger extends React.Component {
+class HelloLogger extends React.Component {
 
-  // The constructor method binds this in the shoot method to the component
-  constructor(props) {
-    super(props)
-    this.logWithRegularBound = this.logWithRegularBound.bind(this)
+  // Arrow Method for event handler.
+  logWithArrow = (message) => {
+    console.log(message);
   }
 
-
-  // Arrow Method for event handler. This will be the 
-  logWithArrow = () => {
-    console.log(this);
-    //  ThisLogger, as arrow functions this is the object the method is defined on.
-  }
-  
-  //  Regular Method for event handler
-  logWithRegular() {
-    console.log(this);
-    // undefined, as the regular function this is not defined by default.
-  }
-  
-  //  Regular Method for event handler, but its this is bound in the constructor.
-  logWithRegularBound() {
-    console.log(this);
-    //  ThisLogger, the binding of this has been set in the constructor.
+  //  Regular Method for event handler.
+  logWithRegular(message) {
+    console.log(message);
   }
 
+  // HelloLogger renders buttons which run methods on click.
   render() {
-    // ThisLogger renders buttons which run methods on click
     return (
       <>
-        <button onClick={this.logWithArrow}>This with arrow function!</button>
-        <button onClick={this.logWithRegular}>This with regular function!</button>
-        <button onClick={this.logWithRegularBound}>This bound with regular function!</button>
+        {/* When clicked, an anonymous arrow function calls logWithArrow passing in the argument */}
+        <button onClick={() => this.logWithArrow("Hello")}>Log "Hello" with arrow function!</button>
+        {/* When clicked, logWithRefugular is bound to this (HelloLogger), and passed the argument */}
+        <button onClick={this.logWithRegular.bind(this,"Hello")}>Log "Hello" with regular function!</button>
       </>
     );
   }
 }
 
-ReactDOM.render(<ThisLogger />, document.getElementById('root'));
+ReactDOM.render(<HelloLogger />, document.getElementById('root'));
