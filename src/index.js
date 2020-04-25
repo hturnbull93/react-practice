@@ -17,9 +17,11 @@ class HelloLogger extends React.Component {
   render() {
     return (
       <>
-        {/* When clicked, an anonymous arrow function calls logWithArrow passing in the argument */}
+        {/* When clicked, an anonymous arrow function calls either arrow or regular function passing in the argument */}
         <button onClick={() => this.logWithArrow("Hello")}>Log "Hello" with arrow function!</button>
-        {/* When clicked, logWithRefugular is bound to this (HelloLogger), and passed the argument */}
+        <button onClick={() => this.logWithRegular("Hello")}>Log "Hello" with arrow function!</button>
+        {/* When clicked, either is bound to this (HelloLogger), and passed the argument */}
+        <button onClick={this.logWithArrow.bind(this,"Hello")}>Log "Hello" with regular function!</button>
         <button onClick={this.logWithRegular.bind(this,"Hello")}>Log "Hello" with regular function!</button>
       </>
     );

@@ -365,9 +365,11 @@ class HelloLogger extends React.Component {
   render() {
     return (
       <>
-        {/* When clicked, an anonymous arrow function calls logWithArrow passing in the argument */}
+        {/* When clicked, an anonymous arrow function calls either arrow or regular function passing in the argument */}
         <button onClick={() => this.logWithArrow("Hello")}>Log "Hello" with arrow function!</button>
-        {/* When clicked, logWithRefugular is bound to this (HelloLogger), and passed the argument */}
+        <button onClick={() => this.logWithRegular("Hello")}>Log "Hello" with arrow function!</button>
+        {/* When clicked, either is bound to this (HelloLogger), and passed the argument */}
+        <button onClick={this.logWithArrow.bind(this,"Hello")}>Log "Hello" with regular function!</button>
         <button onClick={this.logWithRegular.bind(this,"Hello")}>Log "Hello" with regular function!</button>
       </>
     );
@@ -378,3 +380,45 @@ ReactDOM.render(<HelloLogger />, document.getElementById('root'));
 ```
 
 ## The React Event Object
+
+Event handlers have access to the React event that triggered the function.
+
+In the previous example the event is a "click".
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class HelloLogger extends React.Component {
+
+  // Arrow Method for event handler.
+  logWithArrow = (message, event) => {
+    console.log(message);
+    console.log(event.type);
+    // click
+  }
+  
+  //  Regular Method for event handler.
+  logWithRegular(message, event) {
+    console.log(message);
+    console.log(event.type);
+    // click
+  }
+
+  // HelloLogger renders buttons which run methods on click.
+  render() {
+    return (
+      <>
+        {/* Anonymous arrow function need to have the event passed in manually */}
+        <button onClick={(event) => this.logWithArrow("Hello", event)}>Anonymous function calls arrow function!</button>
+        <button onClick={(event) => this.logWithRegular("Hello", event)}>Anonymous function calls regular function!</button>
+        {/* Bind passes event automatically, no need to pass manually */}
+        <button onClick={this.logWithArrow.bind(this,"Hello")}>Binding calls arrow function!</button>
+        <button onClick={this.logWithRegular.bind(this,"Hello")}>Binding calls regular function!</button>
+      </>
+    );
+  }
+}
+
+ReactDOM.render(<HelloLogger />, document.getElementById('root'));
+```
