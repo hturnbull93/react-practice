@@ -157,6 +157,8 @@ ReactDOM.render(<Header favcol="yellow"/>, document.getElementById('root'));
 
 A component is updated any time there is a change in its state or props.
 
+It has the following built in methods.
+
 1. `getDerivedStateFromProps()`
    - As before, the props can influence the state. 
    - This occurs after anything that would change the state and cause the component to update, which could then overwrite the change made.
@@ -219,4 +221,62 @@ class Header extends React.Component {
 }
 
 ReactDOM.render(<Header />, document.getElementById('root'));
+```
+
+### Unmounting
+
+Unmounting is when a component is removed from the dom.
+
+There is only one method:
+
+1. `componentWillUnmount()`
+   - This is called when the component is just about to be unmounted.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+// The Container has a state with show defaulting to true.
+class Container extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {show: true};
+  }
+
+   // The delHeader method sets the state show to false.
+  delHeader = () => {
+    this.setState({show: false});
+  }
+
+   // The render method will only include the Child component in its returned JSX if show is true.
+  render() {
+    let myheader;
+    if (this.state.show) {
+      myheader = <Child />;
+    };
+    // The button runs delHeader on click, updating the state and causing an update.
+    return (
+      <div>
+      {myheader}
+      <button type="button" onClick={this.delHeader}>Delete Header</button>
+      </div>
+    );
+  }
+}
+
+// The Child component is unmounted (caused not to be rendered when the button is clicked).
+// Before this happens, componentWillUnmount is run, blocking the render with a synchronous alert call.
+// After the alert is dismissed, the render will proceed and the Child is unmounted.
+class Child extends React.Component {
+  componentWillUnmount() {
+    alert("The component named Header is about to be unmounted.");
+  }
+  render() {
+    return (
+      <h1>Hello World!</h1>
+    );
+  }
+}
+
+ReactDOM.render(<Container />, document.getElementById('root'));
 ```
