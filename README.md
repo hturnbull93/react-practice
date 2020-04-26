@@ -546,3 +546,238 @@ class MyForm extends React.Component {
 
 ReactDOM.render(<MyForm />, document.getElementById('root'));
 ```
+
+Textarea is handled slightly differently to regular HTML.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      description: 'The content of a textarea goes in the value attribute'
+    };
+  }
+  render() {
+    // textarea is a single tag with a value, like an input, rather than in HTML where it is a paired tag with content between.
+    return (
+      <form>
+        <textarea value={this.state.description} />
+      </form>
+    );
+  }
+}
+
+ReactDOM.render(<MyForm />, document.getElementById('root'));
+```
+
+Select boxes also works slightly differently.
+
+In HTML the chosen option would have an attribute of `selected`.
+
+In JSX the chosen option is set with a value attr on the select tag
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mycar: 'Volvo'
+    };
+  }
+  render() {
+    return (
+      <form>
+        <select value={this.state.mycar}>
+          <option value="Ford">Ford</option>
+          <option value="Volvo">Volvo</option>
+          <option value="Fiat">Fiat</option>
+        </select>
+      </form>
+    );
+  }
+}
+
+ReactDOM.render(<MyForm />, document.getElementById('root'));
+```
+
+## CSS
+
+Inline styling can be used by setting a style attr with an object containing styles, with property names in camelCase.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyHeader extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1 style={{backgroundColor: "red", color: "white"}}>Hello Style!</h1>
+        <p>Add a little style!</p>
+      </div>
+    );
+  }
+}
+
+
+ReactDOM.render(<MyHeader />, document.getElementById('root'));
+```
+
+The object can be declared elsewhere to make it easier to read and use in the render.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyHeader extends React.Component {
+  render() {
+    const mystyle = {
+      color: "white",
+      backgroundColor: "DodgerBlue",
+      padding: "10px",
+      fontFamily: "Arial"
+    };
+    return (
+      <div>
+      <h1 style={mystyle}>Hello Style!</h1>
+      <p>Add a little style!</p>
+      </div>
+    );
+  }
+}
+ReactDOM.render(<MyHeader />, document.getElementById('root'));
+```
+
+CSS files can also be imported.
+
+In `src/main.css`:
+
+```css
+body {
+  background-color: #282c34;
+  color: white;
+  padding: 40px;
+  font-family: Arial;
+  text-align: center;
+}
+
+.blue {
+  color: DodgerBlue;
+}
+```
+
+In `src/index.js`:
+
+As class is a reserved word in JavaScript, the HTML class attribute is called `className`. Classes can be assigned as normal
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './main.css';
+
+class MyHeader extends React.Component {
+  render() {
+    return (
+      <div>
+      <h1 className="blue">Hello Style!</h1>
+      <p>Add a little style!</p>
+      </div>
+    );
+   }
+}
+
+ReactDOM.render(<MyHeader />, document.getElementById('root'));
+```
+
+CSS modules can be used to style components that are placed in separate files.
+
+The css in an imported module is only available to the component that imported it, so name conflicts do not matter.
+
+In `src/tyle.module.css`:
+
+```css
+.bigblue {
+  color: DodgerBlue;
+  padding: 40px;
+  font-family: Arial;
+  text-align: center;
+}
+```
+
+In `src/Car.js`:
+
+```js
+import React from 'react';
+// Import the module.
+import styles from './style.module.css'; 
+
+export class Car extends React.Component {
+  render() {
+    // Access the styles.bigblue rules.
+    return (
+      <h2 className={styles.bigblue}>I am a car</h2>
+    )
+  }
+}
+
+export default Car
+```
+
+In `src/index.js`:
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+// Import Car, its styles come withit.
+import Car from './Car.js'
+
+ReactDOM.render(<Car />, document.getElementById('root'));
+```
+
+## Sass in React
+
+First install Sass
+
+```bash
+npm install node-sass
+```
+
+Sass can be written and is compiled by React for you.
+
+In `src/styles.sass`:
+
+```scss
+$myColor: red;
+
+h1 {
+  color: $myColor;
+}
+```
+
+In `src/index.js`:
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+// Import the scss file
+import './styles.scss';
+
+class MyHeader extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello Style!</h1>
+        <p>Add a little style!</p>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<MyHeader />, document.getElementById('root'));
+```

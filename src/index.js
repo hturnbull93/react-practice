@@ -1,42 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './styles.scss';
 
-class MyForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      age: null,
-      // errormessage constructed as empty string
-      errormessage: ''
-    };
-  }
-  myChangeHandler = (event) => {
-    let nam = event.target.name;
-    let val = event.target.value;
-    let err = '';
-    if (nam === "age") {
-      // if val is not empty and not a number assign err
-      if (val !== "" && !Number(val)) {
-        err = <strong>Your age must be a number</strong>;
-      }
-    }
-    // set state with err and username/age with val
-    this.setState({errormessage: err});
-    this.setState({[nam]: val});
-  }
+class MyHeader extends React.Component {
   render() {
     return (
-      <form>
-      <h1>Hello {this.state.username} {this.state.age}</h1>
-      <p>Enter your name:</p>
-      <input type='text' name='username' onChange={this.myChangeHandler} />
-      <p>Enter your age:</p>
-      <input type='text' name='age' onChange={this.myChangeHandler} />
-      {this.state.errormessage}
-      </form>
+      <div>
+        <h1>Hello Style!</h1>
+        <p>Add a little style!.</p>
+      </div>
     );
   }
 }
 
-ReactDOM.render(<MyForm />, document.getElementById('root'));
+ReactDOM.render(<MyHeader />, document.getElementById('root'));
