@@ -209,7 +209,7 @@ class Header extends React.Component {
   // The previous state is prepended as a new element within the #log element.
   getSnapshotBeforeUpdate(prevProps, prevState) {
     let newDiv = document.createElement("DIV");
-    newDiv.innerHTML = "Before the update, the favourite was " + prevState.favouritecolour;
+    newDiv.innerHTML = "Before the update, my favourite was " + prevState.favouritecolour;
     document.getElementById('log').prepend(newDiv)
   }
 
